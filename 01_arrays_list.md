@@ -318,3 +318,47 @@ class Solution {
 }
 
 ```
+
+---
+#7. First Occurence
+Given a sorted array and a target number, find the index of the first occurence of the target number;
+Return -1 if not found;
+Input: [-9, 0, 1, 1, 2, 3, 3, 3, 5, 18], target: 2
+output: 4
+
+```java
+// Use Binary Search
+// In stead of returning the mid directly when A[mid] == target, continue to find within [left, mid]
+// Stop on left == right - 1, compare A[left] and A[right]
+
+public class solution {
+    public int firstOccurence(int[] A, int target) {
+        if (A == null) {
+            return -1;
+        }
+
+        return binarySearch1(A, 0, A.length-1, target);
+    }
+
+    private int binarySearch1(int[] A, int left, int right, int target) {
+        if (left >= right - 1) {
+            if (A[left] == target) {
+                return left;
+            }
+            if (A[right] == target) {
+                return right;
+            }
+            return -1;
+        }
+
+        int mid = left + (left - right)/2;
+        if (A[mid] >= target) {
+            return binarySearch1(A, left, mid);
+        }
+        else {
+            return binarySearch1(A, mid+1, right);
+        }
+    }
+}
+
+```
