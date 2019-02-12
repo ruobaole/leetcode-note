@@ -264,3 +264,57 @@ class Solution {
 }
 
 ```
+
+---
+##6. Pow(x, n) (leetcode 50)
+Implement pow(x, n), which calculates x raised to the power n (xn).
+
+#Example 1:
+Input: 2.00000, 10
+Output: 1024.00000
+
+#Example 2:
+Input: 2.10000, 3
+Output: 9.26100
+
+#Example 3:
+Input: 2.00000, -2
+Output: 0.25000
+Explanation: 2-2 = 1/22 = 1/4 = 0.25
+
+#Note:
+-100.0 < x < 100.0
+n is a 32-bit signed integer, within the range [−231, 231 − 1]
+
+```java
+// x^n = x^(n/2) * x^(n/2)  -- n is even
+// x^n = x^(n/2) * x^(n/2) * x -- n is odd
+// Thus, each time we reduce the problem pow(x, n) to pow(x, n/2)
+// by its half;
+//
+// Time: O(logN)
+// Space: O(1)
+
+class Solution {
+    public double myPow(double x, int n) {
+        if (n >= 0) {
+            return myPowHelper(x, n);
+        }
+        else {
+            return 1/myPowHelper(x, -1 * n);
+        }
+    }
+    
+    private double myPowHelper(double x, int k) {
+        if (k == 0) {
+            return 1;
+        }
+        double tmp = myPowHelper(x, k/2);
+        if (k % 2 == 0) {
+            return tmp * tmp;
+        }
+        return tmp * tmp * x;
+    }
+}
+
+```
