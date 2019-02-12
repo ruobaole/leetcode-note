@@ -52,7 +52,8 @@ public class Solution {
 
 ```
 ---
-## 2. Quick Sort
+
+##2. Quick Sort
 ```java
 // Each time we pick a pivot (randomly), put the pivot in its correct position
 // by putting all elements <= pivote element to its left and all elements > pivote element
@@ -107,5 +108,58 @@ public class Solution {
     }
 }
 
-
 ``` 
+---
+
+##3. Rainbow Sort
+input: ['a', 'b', 'a', 'b', 'c', 'b']
+output: ['a', 'a', 'b', 'b', 'b', 'c' ]
+
+```java
+// Same as partition() in QuickSort,
+// 3 part --> 3 borders --> pa, pb, pc
+// all elements in range [0, pa-1] should be 'a's;
+// [pa, pb-1] should be 'b's;
+// [pc+1, A.length-1] should be 'c's;
+// all elements within [pb, pc] are unkown;
+// we should ONLY use pb to detect the unkown part of the array, and
+// swich case based on A[pb];
+//
+// Time: O(N)
+// in place partition;
+
+public class Solution {
+    public char[] rainbowSort(char[] A) {
+        if (A == null || A.length == 0) {
+            return A;
+        }
+
+        int pa = 0, pb = 0, pc = A.length-1;
+        while (pb <= pc) {
+            if (A[pb] == 'a') {
+                swap(A, pb++, pa++);
+            }
+            else if (A[pb] == 'c') {
+                swap(A, pb, pc--);
+            }
+            else {
+                // A[pb] == 'b'
+                pb++;
+            }
+        }
+        return A;
+    }
+
+    private void swap(char[] A, int i, int j) {
+        //...
+    }
+}
+
+```
+###Conclusion
+- In Rainbow sort or Partition(), N parts --> N borders;
+- All pointers except the 2nd from the last one is determinated (i.e. we know
+what it is pointing at)
+- Only use the 2nd from the last pointer to detect the unkown part;
+- In each iteration in while loop --> ONLY make decision based on what A[secondFromLastP] points at;
+- Terminate condition of while loop --> l > r;
