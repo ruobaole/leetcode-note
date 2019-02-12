@@ -61,6 +61,8 @@ public class Solution {
 // Time: O(NlogN) -- worst case O(N^2) if the pivot in every recursion partition the array to
 // A.length - 1 and 1;
 // Space: in space sort;
+//
+// *Be careful of the ternimal condition of the while loop -- l <= r
 
 public class Solution {
     private void partition(int[] A, int left, int right) {
@@ -69,7 +71,7 @@ public class Solution {
         swap(A, pivot, right);
         
         int l = left, r = right - 1;
-        while (l < r) {
+        while (l <= r) {
             if (A[l] <= pivotEle) {
                 l++;
             }
@@ -77,12 +79,11 @@ public class Solution {
                 r--;
             }
             else {
-                swap(A, l, r);
+                swap(A, l++, r--);
             }
         }
-        if (A[l] > pivotEle) {
-            swap(A, l++, right--);
-        }
+
+        swap(A, l, right);
         return l;
     }
 
