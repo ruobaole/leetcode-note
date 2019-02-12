@@ -362,3 +362,105 @@ public class solution {
 }
 
 ```
+
+---
+#8. K closest elements
+Given a sorted array, two integers k and x, find the k closest elements to x in the array. The result should also be sorted in ascending order. If there is a tie, the smaller elements are always preferred.
+
+#Example 1:
+Input: [1,2,3,4,5], k=4, x=3
+Output: [1,2,3,4]
+
+#Example 2:
+Input: [1,2,3,4,5], k=4, x=-1
+Output: [1,2,3,4]
+
+#Note:
+The value k is positive and will always be smaller than the length of the sorted array.
+Length of the given array is positive and will not exceed 10^4
+Absolute value of elements in the array and x will not exceed 10^4
+
+```java
+// We need to return a subset of the input array with length k;
+// --> use 2 pointers l, r, starting from 0 and A.length-1
+// shrink the window in each step until the elements within [l, r]
+// is the result (r - l + 1 == k)
+//
+// Time: O(N - k);
+
+class Solution {
+    public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        if (arr == null || k > arr.length || arr.length == 0) {
+            return null;
+        }
+        
+        List<Integer> res = new ArrayList<>(k);
+        int l = 0, r = arr.length-1;
+        while (r - l + 1 > k) {
+            if (Math.abs(arr[l] - x) > Math.abs(arr[r] - x)) {
+                l++;
+            }
+            else {
+                r--;
+            }
+        }
+        
+        for (int i = l; i <= r; i++) {
+            res.add(arr[i]);
+        }
+        return res;
+    }
+}
+
+```
+
+##9. Search in Sorted Unkown Sized Array
+/*
+*  interface Dictionary {
+*    public Integer get(int index);
+*  }
+*/
+
+You do not need to implement the Dictionary interface.
+You can use it directly, the implementation is provided when testing your solution
+
+Given an unkown sized sorted array and a target number, 
+return the index of the target number or -1 if not exists;
+
+```java
+// We need to find a range [left, right] that we can be sure target lies in that range;
+// And start from the range, we can use binary search;
+// To find the range, using single pointer right that doubles each time;
+
+public class Solution {
+    public int search(Dictionary dict, int target) {
+        if (dict == null) {
+            return -1;
+        }
+
+        int left = 0, right = 0;
+        while (dict.get(right) !== null && dict.get(right) < target) {
+            left = right;
+            right *= 2;
+        }
+
+        return binarySearch(dict, left, right, target);
+    }
+
+    private int binarySearch(Dictionary dict, int left, int right, int target) {
+        if (left > right) {
+            return -1;
+        }
+
+        int mid = left + (right - left)/2;
+        if (dict.get(mid) == target) {
+            return mid;
+        }
+        if (dict.get(mid) == null || dict.get(mid) > target) {
+            return binarySearch(dict, left, mid-1);
+        }
+        return binarySearch(dict, mid+1, right);
+    }
+}
+
+```
