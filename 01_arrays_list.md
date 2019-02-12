@@ -163,3 +163,104 @@ what it is pointing at)
 - Only use the 2nd from the last pointer to detect the unkown part;
 - In each iteration in while loop --> ONLY make decision based on what A[secondFromLastP] points at;
 - Terminate condition of while loop --> l > r;
+---
+
+##4. Move all zero to ends
+Input: [0, 1, 23, 4, 0, 33, 0, 18, 2]
+Output: [1, 23, 4, 33, 18, 2, 0, 0, 0]
+The order of non-zero elements should be remain;
+
+```java
+// Partition into 2 parts -- 2 borders -- nz and z
+// [0, nz-1] is all non-zeros; [z+1, A.length-1] all zeros;
+// We can use nz as detector --> thus in each walking step, we should consider
+// situtations nz meets with;
+//
+// Time: O(N)
+// in space
+
+public class Solution {
+    public int[] moveAllZeroToEnd(int[] A) {
+        if (A == null) {
+            return A;
+        }
+
+        int nz = 0, z = A.length-1;
+        while (nz <= z) {
+            if (A[nz] == 0) {
+                swap(A, nz, z--);
+            }
+            else {
+                nz++;
+            }
+        }
+        return A;
+    }
+}
+
+```
+
+---
+##5. Fibbonacci (leetcode 509)
+The Fibonacci numbers, commonly denoted F(n) form a sequence, called the Fibonacci sequence, such that each number is the sum of the two preceding ones, starting from 0 and 1. That is,
+
+F(0) = 0,   F(1) = 1
+F(N) = F(N - 1) + F(N - 2), for N > 1.
+Given N, calculate F(N).
+
+#Example 1:
+Input: 2
+Output: 1
+Explanation: F(2) = F(1) + F(0) = 1 + 0 = 1.
+
+#Example 2:
+Input: 3
+Output: 2
+Explanation: F(3) = F(2) + F(1) = 1 + 1 = 2.
+
+##Example 3:
+Input: 4
+Output: 3
+Explanation: F(4) = F(3) + F(2) = 2 + 1 = 3.
+
+#Note:
+0 ≤ N ≤ 30.
+
+```java
+// Use DP with memo -- time O(N), space O(N);
+// save time on overlapped caculation -- fib(i-2)
+// M[N+1], M[i] -- Fib(i)
+// Recursivly find fib(i) = fib(i-1) + fib(i-2)
+
+class Solution {
+    private int fibHelper(int[] M, int k) {
+        if (k == 0) {
+            M[k] = 0;
+        }
+        if (k == 1) {
+            M[k] = 1;
+        }
+        if (M[k] != -1) {
+            return M[k];
+        }
+        else {
+            M[k] = fibHelper(M, k-1) + fibHelper(M, k-2);
+        }
+   
+        return M[k];
+    }
+    
+    public int fib(int N) {
+        if (N < 0) {
+            return 0;
+        }
+        int[] M = new int[N+1];
+        for (int i = 0; i < N+1; i++) {
+            M[i] = -1;
+        }
+        
+        return fibHelper(M, N);
+    }
+}
+
+```
