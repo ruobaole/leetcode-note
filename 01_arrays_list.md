@@ -464,3 +464,161 @@ public class Solution {
 }
 
 ```
+
+##10. Search a 2D matrix (leetcode 74)
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+
+Integers in each row are sorted from left to right.
+The first integer of each row is greater than the last integer of the previous row.
+
+#Example 1:
+Input:
+matrix = [
+  [1,   3,  5,  7],
+  [10, 11, 16, 20],
+  [23, 30, 34, 50]
+]
+target = 3
+Output: true
+
+#Example 2:
+Input:
+matrix = [
+  [1,   3,  5,  7],
+  [10, 11, 16, 20],
+  [23, 30, 34, 50]
+]
+target = 13
+Output: false
+
+```java
+// Use binary search;
+// We only need a function to transform index in the flattened
+// array to row, col in the matrix;
+// row = i / N;
+// col = i + 1 - row * N - 1;
+// Time: O(M * N)
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0) {
+            return false;
+        }
+        int M = matrix.length;
+        if (matrix[0] == null || matrix[0].length == 0) {
+            return false;
+        }
+        int N = matrix[0].length;
+        
+        return binarySearch(matrix, target, 0, M*N-1, M, N) != -1;
+    }
+    
+    private int binarySearch(int[][] matrix, int target, int left, int right, int M, int N) {
+        if (left > right) {
+            return -1;
+        }
+        
+        int mid = left + (right - left)/2;
+        int[] rc = convert2RC(mid, M, N);
+        if (matrix[rc[0]][rc[1]] == target) {
+            return mid;
+        }
+        if (matrix[rc[0]][rc[1]] < target) {
+            return binarySearch(matrix, target, mid+1, right, M, N);
+        }
+        return binarySearch(matrix, target, left, mid-1, M, N);
+    }
+    
+    private int[] convert2RC(int idx, int M, int N) {
+        int row = idx / N;
+        int col = (idx + 1) - row * N - 1;
+        int[] res = {row, col};
+        return res;
+    }
+}
+```
+
+# Solution2
+```java
+// Solution 2. move row and then col
+// Time: O(M + N)
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return false;
+        }
+        
+        int M = matrix.length, N = matrix[0].length;
+        int r = 0, c = N - 1;
+        while (r < M && c >= 0) {
+            if (matrix[r][c] == target) {
+                return true;
+            }
+            if (matrix[r][c] < target) {
+                r++;
+            }
+            else {
+                c--;
+            }
+        }
+        return false;
+    }
+}
+
+```
+
+##11. Search in Matrix II (leetcode 240)
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+
+- Integers in each row are sorted in ascending from left to right.
+- Integers in each column are sorted in ascending from top to bottom.
+
+#Example:
+Consider the following matrix:
+
+[
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+]
+
+Given target = 5, return true.
+Given target = 20, return false.
+
+```java
+// Start from the last element of each row,
+// if the target is larger than this element, eliminate the whole row
+// if the target is smaller than this element, eliminate the whole col;
+// Time: O(M+N)
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return false;
+        }
+        int M = matrix.length, N = matrix[0].length;
+        int r = 0, c = N - 1;
+        while (r < M && c >= 0) {
+            if (matrix[r][c] == target) {
+                return true;
+            }
+            if (matrix[r][c] < target) {
+                r++;
+            }
+            else {
+                c--;
+            }
+        }
+        return false;
+    }
+}
+
+```
+
+###Conclusion - Search in a sorted array/matrix
+- Find a trick so that in each iteration, you can eliminate as much of the elements.
+(binary search -- dump half of the array; search in sorted matrix -- dump the 
+whole row or col);
