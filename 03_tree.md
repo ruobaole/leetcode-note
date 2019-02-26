@@ -497,5 +497,239 @@ public class Solution {
 }
 
 ```
+
+---
+#9. Check Completeness of a Binary Tree (leetcode 958)
+Given a binary tree, determine if it is a complete binary tree.
+
+Definition of a complete binary tree from Wikipedia:
+In a complete binary tree every level, except possibly the last, is completely filled, and all nodes in the last level are as far left as possible. It can have between 1 and 2h nodes inclusive at the last level h.
+
+##Example 1:
+
+Input: [1,2,3,4,5,6]
+Output: true
+Explanation: Every level before the last is full (ie. levels with node-values {1} and {2, 3}), and all nodes in the last level ({4, 5, 6}) are as far left as possible.
+
+##Example 2:
+
+Input: [1,2,3,4,5,null,7]
+Output: false
+Explanation: The node with value 7 isn't as far left as possible.
+ 
+##Note:
+The tree will have between 1 and 100 nodes.
+
+```java
+// BFS the tree with a flag --> true if we've encountered a node with no left/right
+// child;
+// if flag is true: 1) the node should not have right child;
+// 2) all nodes after this node should have no children;
+//
+// Time: O(N)
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isCompleteTree(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        
+        Deque<TreeNode> queue = new LinkedList<TreeNode>();
+        boolean flag = false;
+        queue.offerLast(root);
+        while (!queue.isEmpty()) {
+            TreeNode cur = queue.pollFirst();
+            if (cur.left == null) {
+                flag = true;
+            }
+            else if (flag) {
+                return false;
+            }
+            else {
+                queue.offerLast(cur.left);
+            }
+            
+            if (cur.right == null) {
+                flag = true;
+            }
+            else if (flag) {
+                return false;
+            }
+            else {
+                queue.offerLast(cur.right);
+            }
+        }
+        return true;
+    }
+}
+```
+
+---
+#10. Is Graph Bipartite?
+Given an undirected graph, return true if and only if it is bipartite.
+
+Recall that a graph is bipartite if we can split it's set of nodes into two independent subsets A and B such that every edge in the graph has one node in A and another node in B.
+
+The graph is given in the following form: graph[i] is a list of indexes j for which the edge between nodes i and j exists.  Each node is an integer between 0 and graph.length - 1.  There are no self edges or parallel edges: graph[i] does not contain i, and it doesn't contain any element twice.
+
+##Example 1:
+Input: [[1,3], [0,2], [1,3], [0,2]]
+Output: true
+Explanation: 
+The graph looks like this:
+0----1
+|    |
+|    |
+3----2
+We can divide the vertices into two groups: {0, 2} and {1, 3}.
+
+##Example 2:
+Input: [[1,2,3], [0,2], [0,1,3], [0,2]]
+Output: false
+Explanation: 
+The graph looks like this:
+0----1
+| \  |
+|  \ |
+3----2
+We cannot find a way to divide the set of nodes into two independent subsets.
+ 
+##Note:
+graph will have length in range [1, 100].
+graph[i] will contain integers in range [0, graph.length - 1].
+graph[i] will not contain i or duplicate values.
+The graph is undirected: if any element j is in graph[i], then i will be in graph[j].
+
+```java
+// BFS the graph and trying to partition the graph into 2 groups;
+// Mark the original node as group1, for all its neighbors:
+// if not visited yet --> mark it has opposite group;
+// if visited --> check if it belongs to the opposite group --> false --> 
+// not bipartite;
+// We use a HashMap<Integer, Integer> to map the idx of graphNode to group number;
+//
+// *Tricky: for the given list, we cannot be sure if the graph is fully connected.
+// Thus, we need to loop the list and check bipartite for each of the element;
+// If an element has already been visited, return True directly (we've checked
+// it before);
+// If not, the given graph if bipartite only of all the individual parts are
+// bipartites;
+//
+// Time: O(N)
+// Space: O(N)
+
+class Solution {
+    public boolean isBipartite(int[][] graph) {
+        if (graph == null) {
+            return false;
+        }
+        
+        HashMap<Integer, Integer> visited = new HashMap<Integer, Integer>();
+        for (int idx = 0; idx < graph.length; idx++) {
+            if (!this.isBipartiteHelper(idx, graph, visited)) {
+                return false; 
+            }
+        }
+        return true;
+    }
+    
+    protected boolean isBipartiteHelper(int idx, int[][] graph, HashMap<Integer, Integer> visited) {
+        if (visited.containsKey(idx)) {
+            // already checked
+            return true;
+        }
+        
+        visited.put(idx, 0);
+        Deque<Integer> queue = new LinkedList<Integer>();
+        queue.offerFirst(idx);
+        while (!queue.isEmpty()) {
+            int cur = queue.pollLast();
+            int neiGroup = visited.get(cur) == 0 ? 1 : 0;
+            for (int nei : graph[cur]) {
+                if (visited.containsKey(nei)) {
+                    if (visited.get(nei) != neiGroup) {
+                        return false;
+                    }
+                }
+                else {
+                    visited.put(nei, neiGroup);
+                    queue.offerFirst(nei);
+                }
+            }
+        }
+        return true;
+    }
+}
+
+```
 ---
 
+#11. Binary Tree Level Order Traversal (leetcode 102)
+Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).
+
+##For example:
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return its level order traversal as:
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+
+```java
+// BFS the tree using a queue;
+// In the beginning of each layer, keep the length of the queue first
+// so that we know we've finish traversing this layer;
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        if (root == null) {
+            return res;
+        }
+        
+        Deque<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offerLast(root);
+        while (!queue.isEmpty()) {
+            int levelLen = queue.size();
+            List<Integer> layer = new ArrayList<Integer>(levelLen);
+            for (int i = 0; i < levelLen; i++) {
+                TreeNode cur = queue.pollFirst();
+                layer.add(cur.val);
+                if (cur.left != null) {
+                    queue.offerLast(cur.left);
+                }
+                if (cur.right != null) {
+                    queue.offerLast(cur.right);
+                }
+            }
+            res.add(layer);
+        }
+        return res;
+    }
+}
+
+```
