@@ -419,3 +419,8 @@ public class Solution {
 }
 
 ```
+
+---
+#Conclusion - LinkedList
+- 1. Terminate condition of while loop: f != null, f.next != null, f.next.next != null --> use examples to determine; Based on if you use f.next within the loop;
+- 2. DummyHead -- use dummyHead when insert into or merge the linkedList;
