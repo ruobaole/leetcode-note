@@ -144,3 +144,40 @@ class Solution {
 ---
 
 ##3. Common Numbers of 2 Sorted Arrays
+- Input:
+[1, 4, 5, 18, 28, 30]
+[4, 6, 18]
+- Output:
+[4, 18]
+
+```java
+// Use 2 pointers p1, p2;
+// - p1++ if array[p1] < array[p2];
+// - p2++ if array[p2] < array[p1];
+
+class Solution {
+    public List<Integer> commonNum(int[] array1, int[] array2) {
+        List<Integer> res = new ArrayList<Integer>();
+        if (array1 == null || array2 == null) {
+            return res;
+        }
+
+        int p1 = 0, p2 = 0;
+        while (p1 < array1.length && p2 < array2.length) {
+            if (array1[p1] == array2[p2]) {
+                res.push(array1[p1]);
+                p1++;
+                p2++;
+            }
+            else if (array1[p1] < array2[p2]) {
+                p1++;
+            }
+            else if (array2[p2] < array1[p1]) {
+                p2++;
+            }
+        }
+        return res;
+    }
+}
+
+```
