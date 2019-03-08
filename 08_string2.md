@@ -181,3 +181,113 @@ class Solution {
 }
 
 ```
+---
+##4. Remove Adjacent Repeated Chars
+Input: 'abbbccdeeff'
+Output: 'abcdef
+
+```java
+// Use 2 pointers;
+// [0, s] is all char in the result string;
+// f points to next char we need to examine;
+// f++ if input.charAt(f) == input.charAt(s)
+
+class Solution {
+    public String deDup(String input) {
+        if (input == null || input.length == 0) {
+            return input;
+        }
+        int s, f = 0;
+        char[] str = input.toCharArray();
+        while (f < str.length) {
+            if (str[f] == str[s]) {
+                f++;
+            }
+            else {
+                str[++s] = str[f++];
+            }
+        }
+        return new String(str, 0, s+1);
+    }
+}
+```
+---
+##5. Remove all Adjacent Repeated Chars
+Input: 'abbbcddeef'
+Output: 'acf
+
+Input: 'aaa'
+Output: ''
+
+```java
+// Use 2 pointers;
+// [0, s] is the result string --> we can't be sure whether str[0] is in the result string or not
+// thus, s is inited to -1;
+// f points to the next char we need to examine;
+
+class Solution {
+    public String deDupII(String input) {
+        if (input == null || input.length == 0) {
+            return input;
+        }
+        char[] str = input.toCharArray();
+        int s = -1, f = 0;
+        while (f < str.length) {
+            if (s < 0 || str[f] != str[s]) {
+                str[++s] = str[f++];
+            }
+            else {
+                while (f < str.length && str[s] == str[f]) {
+                    f++;
+                }
+                s--;
+            }
+        }
+        return new String(str, 0, s+1);
+    }
+}
+
+```
+---
+
+#6. Determine If Substring
+Input: 'mameemowmoo' 'mow'
+Output: 5
+
+return -1 if not substring
+
+```java
+// Iterate through largeStr's [0, large.length-small.length]
+// Compare smallStr and largeStr[i, i+smallStr.length-1]
+//
+// Time: worst O((Nlarge - Nsmall) * Nsmall)
+
+class Solution {
+    public int isSubstring(String large, String small) {
+        if (small == null || small.length == 0) {
+            return 0;
+        }
+        if (large == null || large.length < small.length) {
+            return -1;
+        }
+
+        int Nl = large.length, Ns = small.length;
+        for (int i = 0; i <= Nl - Ns; i++) {
+            if (compareStr(small, large, i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    protected boolean compareStr(String small, String large, int start) {
+        for (int i = 0; i < small.length; i++) {
+            if (small.charAt(i) != large.charAt(start+i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+```
