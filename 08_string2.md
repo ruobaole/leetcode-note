@@ -250,7 +250,7 @@ class Solution {
 ```
 ---
 
-#6. Determine If Substring
+##6. Determine If Substring
 Input: 'mameemowmoo' 'mow'
 Output: 5
 
@@ -287,6 +287,102 @@ class Solution {
             }
         }
         return true;
+    }
+}
+
+```
+---
+
+##7. Remove all Spaces (leading/traling/duplicated)
+- Input: "  an    apple a   day  "
+Output: "an apple a day"
+
+- Input: "   "
+output: ""
+
+```java
+// 2 pointers; slow points to the last char in the result string;
+// - Cause we're not sure whether the first letter should be in the result array or not --> slow is inited to -1;
+// - 1) f --> skip all leading spaces --> if s == -1 and str[f] == ' ' --> f++
+// - 2) for all dup and trailing spaces --> if str[f] == ' ' && str[s] == str[f] --> f++ --> (write 2st space and skip all others)
+// - 3) for trailing spaces --> if str[s] points to ' ' at last, s--;
+
+class Solution {
+    public String removeAllSpaces(String input) {
+        if (input == null || input.length == 0) {
+            return input;
+        }
+        char[] str = input.toCharArray();
+        int s = -1, f = 0;
+        while (f < input.length) {
+            if (s == -1) {
+                if (str[f] == ' ') {
+                    f++;
+                }
+                else {
+                    str[++s] = str[f++];
+                }
+            }
+            else if (str[s] == ' ' && str[f] == ' ') {
+                f++;
+            }
+            else {
+                str[++s] = str[f++];
+            }
+        }
+        if (s >= 0 && str[s] == ' ') {
+            s--;
+        }
+        return new String(str, 0, slow+1);
+    }
+}
+
+```
+---
+
+##8. Remove Certain Chars From String
+- Input: "kacikawawa is great" "ktc"
+Output: "aiww is grea"
+
+- Input: " an apple a day" "ktc"
+Output: " an apple a day"
+
+- Input: "play on the finger board" "kc"
+Output: "paly on the finger board"
+
+```java
+// User 2 pointers and a hashset;
+// - [0, slow] is the current returning substring;
+// - [fast, end] is the substring waiting to be check;
+// - turn string t into a hashset<Character> so that we can check if a char is in t in O(1)
+//
+// Time: O(M + N)
+
+class Solution {
+    public String removeCertainChar(String input, String t) {
+        if (input == null || t == null || input.length == 0 || t.length == 0) {
+            return input;
+        }
+        char[] str = input.toCharArray();
+        HashSet<Character> tSet = getSet(t);
+        int s = -1, f = 0;
+        while (f < input.length) {
+            if (tSet.contains(str[f])) {
+                f++;
+            }
+            else {
+                str[++s] = str[f++];
+            }
+        }
+        return new String(str, 0, s+1);
+    }
+
+    protected HashSet<Character> getSet(String t) {
+        HashSet<Character> res = new HashSet<Character>();
+        for (int i = 0; i < t.length; i++) {
+            res.add(t.charAt(i));
+        }
+        return res;
     }
 }
 
