@@ -211,3 +211,130 @@ class Solution {
 }
 
 ```
+---
+
+##6. Lowest Common Ancestor (with parent node)
+Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+
+Given the following binary tree:  root = [3,5,1,6,2,0,8,null,null,7,4]
+
+###Example 1:
+
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+
+###Example 2:
+
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+Output: 5
+Explanation: The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+ 
+###Note:
+All of the nodes' values will be unique.
+p and q are different and both values will exist in the binary tree.
+
+**Supposing we have parent pointer in each treeNode:**
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode parent;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+```
+
+```java
+// Step1: find the depth of the 2 given node by traverse from that node untill the root;
+// Step2: from the deeper node, traverse till the depth of that node is the same as the shallower node;
+// Step3: from those 2 nodes, traverse until 2 nodes meets --> lowest common ancestor --> else null
+//
+// Time: O(logN)
+
+class Solution {
+    public TreeNode LCA1(TreeNode p, TreeNode q) {
+        if (p == null || q == null) {
+            return p == null ? p : q;
+        }
+
+        int dp = getDepth(p);
+        int dq = getDepth(q);
+        if (dp > dq) {
+            this.moveNodeByDepth(p, dp - dq);
+        }
+        else {
+            this.moveNodeByDepth(q, dq - dp);
+        }
+        while (p != null && q != null && p != q) {
+            p = p.parent;
+            q = q.parent;
+            if (p == q) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    protected int getDepth(TreeNode n) {
+        int depth = 0;
+        while (n.parent != null) {
+            n = n.parent;
+            depth++;
+        }
+        return depth;
+    }
+
+    protected void moveNodeByDepth(TreeNode n, int depth) {
+        while (depth != 0 && n.parent != null) {
+            n = n.parent;
+            depth--;
+        }
+    }
+}
+
+```
+---
+
+##7. Lowest Common Ancestor with K nodes (without parent node) - (l.236)
+
+This time given a list of node ArrayList<TreeNode> without parent pointer
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+ ```java
+ // A pre-order DFS solution -- trying to ask which node in the list does leftSubtree contains, and 
+ // which does right subtree contains;
+ // 1. If root is in nodeList --> return root;
+ // 2. l = DFS(l.left, nodeList); r = DFS(l.right, nodeList)
+ //    2.1) if (l != null && r != null) -> return root;
+ //    2.2) return l == null ? r : l;
+
+class Solution {
+    public TreeNode LCA2(TreeNode root, ArrayList<TreeNode> nodeList) {
+        if (root == null || nodeList.contains(root)) {
+            return root;
+        }
+        TreeNode left = LCA2(root.left, nodeList);
+        TreeNode right = LCA2(root.right, nodeList);
+        if (left != null && right != null) {
+            return root;
+        }
+        return left == null ? right : left;
+    }
+ }
+
+ ```
