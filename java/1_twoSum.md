@@ -33,6 +33,7 @@ class Solution {
     }
 }
 ```
+---
 
 #2. Two Sum II (sorted) (l. 167)
 Given an array of integers that is already sorted in ascending order, find two numbers such that they add up to a specific target number.
@@ -76,6 +77,7 @@ class Solution {
     }
 }
 ```
+---
 
 #3. Two Sum IV - input is a BST (l. 653)
 Given a Binary Search Tree and a target number, return true if there exist two elements in the BST such that their sum is equal to the given target.
@@ -206,4 +208,73 @@ class Solution {
         return ans;
     }
 }
+```
+---
+
+#5. 3 Sum (l.15)
+Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
+
+Note:
+The solution set must not contain duplicate triplets.
+
+##Example:
+
+Given array nums = [-1, 0, 1, 2, -1, -4],
+
+A solution set is:
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+
+```java
+// - Iterate from 0 to end-2; Each nums[i] is the candidate for 1st element in the
+// triplets;
+// - From [i+1, end], use standard way to find twoSum == 0 - nums[i];
+// *Tricky:
+// 1) To avoid duplicates, we need to sort the array first;
+//    and then try to skip all duplicates when searching for 1st, 2nd, 3rd elements;
+// 2) To not use extra space (HashSet) when doing twoSum, we also need to sort the array first;
+//
+// Time: O(N^2)
+
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        if (nums == null || nums.length < 3) {
+            return res;
+        }
+        
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length-2; i++) {
+            // skip all duplicate 1st elements
+            if (i == 0 || nums[i] != nums[i-1]) {
+                int left = i+1, right = nums.length-1;
+                while (left < right) {
+                    int sum = nums[left] + nums[right];
+                    if (sum == 0 - nums[i]) {
+                        res.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                        // skip all duplicates if found one ans
+                        while (left < right && nums[left] == nums[left+1]) {
+                            left++;
+                        }
+                        while (left < right && nums[right] == nums[right-1]) {
+                            right--;
+                        }
+                        left++;
+                        right--;
+                    }
+                    if (sum < 0 - nums[i]) {
+                        left++;
+                    }
+                    if (sum > 0 - nums[i]) {
+                        right--;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+}
+
 ```
