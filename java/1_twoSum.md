@@ -3,7 +3,7 @@ Given an array of integers, return indices of the two numbers such that they add
 
 You may assume that each input would have exactly one solution, and you may not use the same element twice.
 
-##Example:
+## Example:
 Given nums = [2, 7, 11, 15], target = 9,
 Because nums[0] + nums[1] = 2 + 7 = 9,
 return [0, 1].
@@ -35,16 +35,16 @@ class Solution {
 ```
 ---
 
-#2. Two Sum II (sorted) (l. 167)
+# 2. Two Sum II (sorted) (l. 167)
 Given an array of integers that is already sorted in ascending order, find two numbers such that they add up to a specific target number.
 
 The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2.
 
-##Note:
+## Note:
 Your returned answers (both index1 and index2) are not zero-based.
 You may assume that each input would have exactly one solution and you may not use the same element twice.
 
-##Example:
+## Example:
 Input: numbers = [2,7,11,15], target = 9
 Output: [1,2]
 Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.
@@ -79,9 +79,9 @@ class Solution {
 ```
 ---
 
-#3. Two Sum IV - input is a BST (l. 653)
+# 3. Two Sum IV - input is a BST (l. 653)
 Given a Binary Search Tree and a target number, return true if there exist two elements in the BST such that their sum is equal to the given target.
-##Example 1:
+## Example 1:
 Input: 
     5
    / \
@@ -94,7 +94,7 @@ Target = 9
 Output: True
  
 
-##Example 2:
+## Example 2:
 Input: 
     5
    / \
@@ -163,10 +163,10 @@ class Solution {
 ```
 ---
 
-#4. Subarray sum equals k (l.560)
+# 4. Subarray sum equals k (l.560)
 Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
 
-##Example 1:
+## Example 1:
 Input:nums = [1,1,1], k = 2
 Output: 2
 Note:
@@ -211,13 +211,13 @@ class Solution {
 ```
 ---
 
-#5. 3 Sum (l.15)
+# 5. 3 Sum (l.15)
 Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
 
 Note:
 The solution set must not contain duplicate triplets.
 
-##Example:
+## Example:
 
 Given array nums = [-1, 0, 1, 2, -1, -4],
 
@@ -277,4 +277,91 @@ class Solution {
     }
 }
 
+```
+
+---
+# 6. 4 Sum (l.18)
+Given an array nums of n integers and an integer target, are there elements a, b, c, and d in nums such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note:
+
+The solution set must not contain duplicate quadruplets.
+
+## Example:
+
+Given array nums = [1, 0, -1, 0, -2, 2], and target = 0.
+
+A solution set is:
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+
+```java
+// Reduce to 2Sum
+// - get 2sum of all pairs in array; store in HashMap<Integer, List<Integer>>
+//   key -- sum of pair, value -- [i1, j1, i2, j2]
+// - get 2sums of all pairs again, this time try to find (target - 2sum) in input HashSet;
+// - To ensure the 2 pairs conform a valid quad, we only push to answer if j2 > j1; 
+//   (i1 < j1 < j2 < i2)
+// *Tricky: sort to avoid duplicate:
+// - In first iteration, get 2 sums from left to right, skip all consequtive elements and
+//  keep the first one; (so that among final answers, no 1st and 2nd elements are
+//  the same)
+// - In second iteration, skip all consequtive and keep the last one, so that we won't
+//  miss situation where 1st == 3rd && 2nd == 4th elements;
+//
+// Time: O(N^2)
+
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        if (nums == null || nums.length < 4) {
+            return res;
+        }
+
+        HashMap<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length-1; i++) {
+            // skip consequtive and keep 1st one
+            if (i > 0 && nums[i] == nums[i-1]) {
+                continue;
+            }
+            for (int j = i+1; j < nums.length; j++) {
+                if (j > i+1 && nums[j] == nums[j-1]) {
+                    continue;
+                }
+                int sum = nums[i] + nums[j];
+                if (map.get(sum) == null) {
+                    List<Integer> pairs = new ArrayList<Integer>();
+                    map.put(sum, pairs);
+                }
+                map.get(sum).add(i);
+                map.get(sum).add(j);
+            }
+        }
+
+        for (int i = nums.length-1; i >= 1; i--) {
+            if (i < nums.length-1 && nums[i] == nums[i+1]) {
+                continue;
+            }
+            for (int j = i-1; j >= 0; j--) {
+                if (j < i-1 && nums[j] == nums[j+1]) {
+                    continue;
+                }
+                int sum2 = nums[i] + nums[j];
+                if (map.get(target - sum2) != null) {
+                    List<Integer> pairs = map.get(target - sum2);
+                    for (int k = 0; k < pairs.size(); k += 2) {
+                        if (pairs.get(k+1) < j) {
+                            res.add(Arrays.asList(nums[pairs.get(k)], nums[pairs.get(k+1)], nums[j], nums[i]));
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+}
 ```
