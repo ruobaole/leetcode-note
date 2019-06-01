@@ -27,8 +27,8 @@ public class Solution {
 
         int l = left, r = mid+1, i = left;
         while (l <= mid && r <= right) {
-            if (leftA[l] <= rightA[r]) {
-                A[i++] = helperA[l++]; 
+            if (helperA[l] <= helperA[r]) {
+                A[i++] = helperA[l++];
             }
             else {
                 A[i++] = helperA[r++];
@@ -37,7 +37,7 @@ public class Solution {
         while (l <= mid) {
             A[i++] = helperA[l++];
         }
-    } 
+    }
 
     public int[] mergeSort(int[] A) {
         if (A == null) {
