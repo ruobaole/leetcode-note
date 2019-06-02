@@ -587,4 +587,170 @@ Output: false
 //
 // Time: O(logN + logM)
 
+public class Solution {
+    public int[] searchMatrixI(int[][] matrix, int target) {
+        int[] res = new int[2] {-1, -1};
+        if (matrix == null || matrix.length == 0) {
+            return res;
+        }
+        int N = matrix.length;
+        if (matrix[0] == null || matrix[0].length == 0) {
+            return res;
+        }
+        int M = matrix[0].length;
+        int r = this.biSearchRow(matrix, M, target, 0, N-1);
+        if (r == -1) {
+            return res;
+        }
+        int c = this.biSearch(matrix[r], target, 0, M-1);
+        if (c == -1) {
+            return res;
+        }
+        res[0] = r;
+        res[1] = c;
+        return res;
+    }
+
+    protected int biSearchRow(int[] matrix, int M, int target, int low, int high) {
+        if (low >= high - 1) {
+            if (matrix[high][M-1] >= target) {
+                return matrix[low][M-1] >= target ? low : high;
+            }
+            else {
+                return -1;
+            }
+        }
+        int mid = low + (high - low)/2;
+        if (matrix[mid][M-1] == target) {
+            return mid;
+        }
+        else if (matrix[mid][M-1] < target) {
+            return this.biSearchRow(matrix, M, target, mid, high);
+        }
+        else {
+            return this.biSearchRow(matrix, M, target, low, mid);
+        }
+    }
+
+    protected int biSearch(int[] array, int target, int low, int high) {
+        if (low > high) {
+            return -1;
+        }
+        int mid = low + (high - low)/2;
+        if (array[mid] == target) {
+            return mid;
+        }
+        if (array[mid] < target) {
+            return biSearch(array, target, low, mid-1);
+        }
+        if (array[mid] > target) {
+            return biSearch(array, target, mid+1, high);
+        }
+    }
+}
+
+```
+
+## 12. Search in Matrix II (leetcode 240)
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+
+- Integers in each row are sorted in ascending from left to right.
+- Integers in each column are sorted in ascending from top to bottom.
+
+#Example:
+Consider the following matrix:
+
+[
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+]
+
+Given target = 5, return true.
+Given target = 20, return false.
+
+```java
+// * The key to search in sorted list is to find a way to eliminate as much of the elements as possible in each iter;
+// - start from the top-right corner of the matrix;
+// - if smaller than target --> eliminate all rows above it --> go to next row;
+// - if larget than target --> eliminate all cols right to it --> go to prev col;
+//
+// * The above rule also apply to question#11.
+// Time: O(M+N)
+
+public class Solution {
+    public int[][] searchMatrixII(int[][] matrix, int target) {
+        int[] res = new int[2] {-1, -1};
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return res;
+        }
+        int N = matrix.length, M = matrix[0].length;
+        int r = 0, c = M-1;
+        while (r < N && c >= 0) {
+            if (matrix[r][c] == target) {
+                res[0] = r;
+                res[1] = c;
+                return res;
+            }
+            if (matrix[r][c] < target) {
+                c--;
+            }
+            else if (matrix[r][x] > target) {
+                r++;
+            }
+        }
+        return res;
+    }
+}
+
+```
+
+## 13. Search in Sorted Unkown Sized Array
+/*
+*  interface Dictionary {
+*    public Integer get(int index);
+*  }
+*/
+
+You do not need to implement the Dictionary interface.
+You can use it directly, the implementation is provided when testing your solution
+
+Given an unkown sized sorted array and a target number, 
+return the index of the target number or -1 if not exists;
+
+```java
+// We need to find a range [left, right] that we can be sure target lies in it;
+// From the range, we can use binary-search;
+// To find the range, we can use pointer 'right' that doubles at each time;
+
+public class Solution {
+    public int searchInDict(Dictionary dict, int target) {
+        if (dict == null) {
+            return -1;
+        }
+        int left = 0, right = 0;
+        while (dict.get(right) != null && dict.get(right) < target) {
+            left = right;
+            right *= 2;
+        }
+        return this.biSearchDict(dict, target, left, right);
+    }
+
+    protected int biSearchDict(Dictionary dict, int target, int left, int right) {
+        if (left > right) {
+            return -1;
+        }
+        int mid = left + (right - left)/2;
+        if (dict.get(mid) == null || dict.get(mid) > target) {
+            return this.biSearchDict(dict, target, left, mid-1);
+        }
+        if (dict.get(mid) == target) {
+            return mid;
+        }
+        return this.biSearchDict(dict, target, mid+1, right);
+    }
+}
+
 ```

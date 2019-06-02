@@ -5,3 +5,6 @@ https://youtu.be/GBuHSRDGZBY
 - Tip #3. Think with **simple example** -> try noticing a pattern
 - Tip #4. Use some visualization
 - Tip #5. Test your solution on a few examples
+
+# Useful links
+- https://www.zybuluo.com/Yano/note/255732
