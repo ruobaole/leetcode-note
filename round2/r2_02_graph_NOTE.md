@@ -23,12 +23,16 @@ https://www.geeksforgeeks.org/graph-data-structure-and-algorithms/
     - [Union by Rank or Height](https://www.geeksforgeeks.org/union-find-algorithm-set-2-union-by-rank/) --> O(ElogV)
 - **Undirectional** Graph (Assumes no self-loop) -- [DFS](https://www.geeksforgeeks.org/detect-cycle-undirected-graph/) -- for every visited vertix 'v', if there're any adjacent 'u' such that u is visited and u is not parent of v --> cycle!
 
-## Minimum Spanning Tree
+## Minimum Spanning Tree  --> GREEDY
 - For **connected** **undirectional** graph: a spanning tree with weight less than or equal to the weight of every other spanning tree;
-- [Kruskal](ttps://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/) (use Union-Find) 
-- Prim
+- [Kruskal](ttps://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/) (use Union-Find) -- O(ElogE + ElogV)
+- Prim -- O(V^2)
 
 ## Shortest Path
+- [Dijkstra](https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/)
+    - for both **directional** and **undirectional** graphs;
+    - O(N^2)
+    - doesn't work for graph with negative weight --> Bellman-Ford instead;
 
 ## Back Tracking
 - n-queen's problem
