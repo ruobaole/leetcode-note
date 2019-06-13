@@ -1,4 +1,9 @@
+# 0. NOTES
+
+- monotonic queue and stack
+
 # 1. Valid Parenthesis (l. 20)
+
 Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
 An input string is valid if:
@@ -8,26 +13,35 @@ Open brackets must be closed in the correct order.
 Note that an empty string is also considered valid.
 
 Example 1:
+
 ```
 Input: "()"
 Output: true
 ```
+
 Example 2:
+
 ```
 Input: "()[]{}"
 Output: true
 ```
+
 Example 3:
+
 ```
 Input: "(]"
 Output: false
 ```
+
 Example 4:
+
 ```
 Input: "([)]"
 Output: false
 ```
+
 Example 5:
+
 ```
 Input: "{[]}"
 Output: true
@@ -37,7 +51,7 @@ Output: true
 // Assume: s only contains bracket chars
 // Use a stack;
 // - Everytime we encounter a left bracket --> stack.push(s[i])
-// - Everytime we encounter a right bracket --> stack.pop() and see if it matches 
+// - Everytime we encounter a right bracket --> stack.pop() and see if it matches
 //   current bracket;
 // - Check if stack.isEmpty() when s reaches the end;
 
@@ -82,24 +96,30 @@ class Solution {
 ```
 
 # 2. Remove k Digits (l.402)
+
 Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
 
 Note:
 The length of num is less than 10002 and will be ≥ k.
 The given num does not contain any leading zero.
 Example 1:
+
 ```
 Input: num = "1432219", k = 3
 Output: "1219"
 Explanation: Remove the three digits 4, 3, and 2 to form the new number 1219 which is the smallest.
 ```
+
 Example 2:
+
 ```
 Input: num = "10200", k = 1
 Output: "200"
 Explanation: Remove the leading 1 and the number is 200. Note that the output must not contain leading zeroes.
 ```
+
 Example 3:
+
 ```
 Input: num = "10", k = 2
 Output: "0"
@@ -156,9 +176,11 @@ class Solution {
 ```
 
 # 3. Validate Stack Sequences (l.946)
+
 Given two sequences pushed and popped with distinct values, return true if and only if this could have been the result of a sequence of push and pop operations on an initially empty stack.
 
 Example 1:
+
 ```
 Input: pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
 Output: true
@@ -166,13 +188,17 @@ Explanation: We might do the following sequence:
 push(1), push(2), push(3), push(4), pop() -> 4,
 push(5), pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
 ```
+
 Example 2:
+
 ```
 Input: pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
 Output: false
 Explanation: 1 cannot be popped before 2.
 ```
+
 Note:
+
 ```
 0 <= pushed.length == popped.length <= 1000
 0 <= pushed[i], popped[i] < 1000
