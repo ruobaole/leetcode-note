@@ -255,4 +255,207 @@ class Solution {
         return false;
     }
 }
+<<<<<<< HEAD:round2/r2_03_stack.md
 ```
+||||||| merged common ancestors:round2/r2_02_stack.md
+```
+=======
+```
+
+# 4. Basic Calculater
+Implement a basic calculator to evaluate a simple expression string.
+
+The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .
+
+Example 1:
+```
+Input: "1 + 1"
+Output: 2
+```
+Example 2:
+```
+Input: " 2-1 + 2 "
+Output: 3
+```
+Example 3:
+```
+Input: "(1+(4+5+2)-3)+(6+8)"
+Output: 23
+```
+Note:
+- You may assume that the given expression is always valid.
+- Do not use the eval built-in library function.
+
+```java
+// Assume: Input string is always valid
+// Use 2 stacks -- numStk, opStk;
+// - When num: push it to numStk;
+// - When + -: if (!opStk.isEmpty() && opStk.top() != '(') --> opStk.pop() previous op, num.pop out 2 prev number;
+//   calculate the result num and push the num into numStk, current op into opStk;
+// - When ( : push it to opStk;
+// - When ) : pop ops from opStk, pair of nums from numStk, calculate result number -- until
+//   opStk.top() == (; --> pop out '(' and push the result num into numStk;
+// - When ' ': ignore;
+// - When we've reached the end of s: pop op from opStk, pair of num from numStk and get result;
+// Corner Cases:
+// - (2)
+// - 123
+
+class Solution {
+    public int calculate(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        Deque<Character> opStk = new LinkedList<Character>();
+        Deque<Integer> numStk = new LinkedList<Integer>();
+        for (int i = 0; i < s.length(); i++) {
+            char cur = s.charAt(i);
+            if (cur == ' ') {
+                continue;
+            }
+            if (this.isNum(cur) && i > 0 && this.isNum(s.charAt(i-1))) {
+                int prevNum = numStk.pollFirst();
+                int curNum = prevNum * 10 + this.toNum(cur);
+                numStk.offerFirst(curNum);
+            }
+            else if (this.isNum(cur)) {
+                numStk.offerFirst(this.toNum(cur));
+            }
+            if (cur == '+' || cur == '-') {
+                if (opStk.isEmpty() || (!opStk.isEmpty() && opStk.peekFirst() == '(')) {
+                    opStk.offerFirst(cur);
+                }
+                else {
+                    char prevOp = opStk.pollFirst();
+                    int prevNum1 = numStk.pollFirst();
+                    int prevNum0 = numStk.pollFirst();
+                    numStk.offerFirst(this.calculate(prevNum0, prevNum1, prevOp));
+                    opStk.offerFirst(cur);
+                }
+            }
+            if (cur == '(') {
+                opStk.offerFirst(cur);
+            }
+            if (cur == ')' && opStk.peekFirst() != '(') {
+                char prevOp = opStk.pollFirst();
+                int prevNum1 = numStk.pollFirst();
+                int prevNum0 = numStk.pollFirst();
+                numStk.offerFirst(this.calculate(prevNum0, prevNum1, prevOp));
+                // pop out '('
+                opStk.pollFirst();
+            }
+            else if (cur == ')') {
+                // pop out '('
+                opStk.pollFirst();
+            }
+        }
+        if (!opStk.isEmpty()) {
+            char prevOp = opStk.pollFirst();
+            int prevNum1 = numStk.pollFirst();
+            int prevNum0 = numStk.pollFirst();
+            return this.calculate(prevNum0, prevNum1, prevOp);
+        }
+        if (!numStk.isEmpty()) {
+            return numStk.pollFirst();
+        }
+        return 0;
+    }
+    
+    protected boolean isNum(char c) {
+        if (c >= '0' && c <= '9') {
+            return true;
+        }
+        return false;
+    }
+    
+    protected int toNum(char c) {
+        return c - '0';
+    }
+    
+    protected int calculate(int num0, int num1, char c) {
+        if (c == '+') {
+            return num0 + num1;
+        }
+        if (c == '-') {
+            return num0 - num1;
+        }
+        return 0;
+    }
+}
+```
+
+# 5. 132 Pattern (l.456)
+Given a sequence of n integers a1, a2, ..., an, a 132 pattern is a subsequence ai, aj, ak such that i < j < k and ai < ak < aj. Design an algorithm that takes a list of n numbers as input and checks whether there is a 132 pattern in the list.
+
+Note: n will be less than 15,000.
+
+Example 1:
+```
+Input: [1, 2, 3, 4]
+Output: False
+Explanation: There is no 132 pattern in the sequence.
+```
+
+Example 2:
+```
+Input: [3, 1, 4, 2]
+Output: True
+Explanation: There is a 132 pattern in the sequence: [1, 4, 2].
+```
+
+Example 3:
+```
+Input: [-1, 3, 2, 0]
+Output: True
+Explanation: There are three 132 patterns in the sequence: [-1, 3, 2], [-1, 3, 0] and [-1, 2, 0].
+```
+
+```java
+// Keep track of global min and use a monotonic stack to record monotonical 
+// increasing subarray;
+// Check if element in subarray, and updating the stack at the same time;
+// - if cur < min --> down slope --> update min
+// - if cur >= min --> up slope --> update monotonic stack --
+//   - if cur <= stack.top().low: start a new subarray --> stack.push([min, cur])
+//   - if cur >= stack.top().high: updating current subarray -->
+//        iteratively pop subarrays out and compare cur with stack.top()
+//   - else: found a pattern --> return;
+//
+// Time: O(N)
+
+class Solution {
+    public boolean find132pattern(int[] nums) {
+        if (nums == null || nums.length < 3) {
+            return false;
+        }
+        Deque<int[]> stk = new LinkedList<int[]>();
+        int min = Integer.MAX_VALUE;
+        for (int cur : nums) {
+            if (cur < min) {
+                // on down slope
+                min = cur;
+            }
+            else {
+                // on up slope
+                while (!stk.isEmpty()) {
+                    if (cur <= stk.peekFirst()[0]) {
+                        // start a new subarray
+                        break;
+                    }
+                    if (cur < stk.peekFirst()[1]) {
+                        // within a subarray
+                        return true;
+                    }
+                    else {
+                        // >= stk.top.high --> update subarrays
+                        stk.pollFirst();
+                    }
+                }
+                stk.offerFirst(new int[] {min, cur});
+            }
+        }
+        return false;
+    }
+}
+```
+>>>>>>> add 132 pattern:round2/r2_02_stack.md
