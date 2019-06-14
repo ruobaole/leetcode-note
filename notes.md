@@ -28,3 +28,9 @@ https://youtu.be/GBuHSRDGZBY
         - N = 10^6 --> N^2 > 10^8 --> O(N)
         - N = 10^3 --> N^2 = 10^6 < 10^8 --> O(N^2) or O(NlogN)
         - N <= 20 --> O(2^N)
+
+
+## Extra
+- monotonic queue and stack
+- Sliding window median
+- Sliding window standard deviation
