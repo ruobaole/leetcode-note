@@ -32,5 +32,7 @@ https://youtu.be/GBuHSRDGZBY
 
 ## Extra
 - monotonic queue and stack
+- Get median with 2 heaps;
 - Sliding window median
 - Sliding window standard deviation
+- l.287
